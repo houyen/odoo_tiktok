@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="tiktok_express_1" model="res.partner">
+            <field name="name">Tiktok</field>
+            <field name="is_transporter" eval="True" />
+            <field name="transporter_type">external</field>
+            <field name="transporter_code">TIK</field>
+        </record>
+
+        <record id="delivery_tiktok_express_1" model="delivery.carrier">
+            <field name="name">Miễn phí giao hàng Tiktok</field>
+            <field name="service_code">10TIK</field>
+            <field name="transporter_id" ref="tiktok_express_1"/>
+        </record>
+
+    </data>
+
+</odoo>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+        <!-- View form -->
+        <record id="view_tiktok_product_form" model="ir.ui.view">
+            <field name="name">tiktok.product.form</field>
+            <field name="model">tiktok.product</field>
+            <field name="arch" type="xml">
+                <form create="0">
+                    <group>
+                        <field name="product_name_tiktok"/>
+                        <field name="product_tiktok_id" />
+                        <field name="product_price_tiktok"/>
+                        <field name="product_quantity_tiktok"/>
+                        <field name="product_sku_tiktok"/>
+                        <field name="warehouse_tiktok_id" />
+                        <field name="product_id"/>
+                        <field name="is_mapping"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <!-- View tree -->
+        <record id="view_tiktok_product_tree" model="ir.ui.view">
+            <field name="name">tiktok.product.tree</field>
+            <field name="model">tiktok.product</field>
+            <field name="arch" type="xml">
+                <tree editable="bottom" create="0">
+                    <field name="product_name_tiktok"/>
+                    <field name="product_tiktok_id" />
+                    <field name="tiktok_currency" />
+                    <field name="product_price_tiktok"/>
+                    <field name="product_quantity_tiktok"/>
+                    <field name="product_sku_tiktok" invisible="1"/>
+                    <field name="warehouse_tiktok_id" invisible="1"/>
+                    <field name="product_id"/>
+                    <field name="is_mapping" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_tiktok_product" model="ir.actions.act_window">
+            <field name="name">TikTok Products</field>
+            <field name="res_model">tiktok.product</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <record id="action_fetch_data_product_tiktok" model="ir.actions.server">
+            <field name="name">Create Product from API</field>
+            <field name="model_id" ref="erp_tiktok.model_tiktok_product"/>
+            <field name="state">code</field>
+            <field name="code">
+                action = model.save_product_list_data()
+            </field>
+        </record>
+
+        <record id="action_api_tiktok_saleorder" model="ir.actions.server">
+            <field name="name">Create SO from API</field>
+            <field name="model_id" ref="erp_tiktok.model_sale_order"/>
+            <field name="state">code</field>
+            <field name="code">
+                action = model.create_sale_order_from_api()
+            </field>
+        </record>
+        <record id="action_sale_order_tiktok_view" model="ir.actions.act_window">
+            <field name="name">Sale-Order TikTok</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('ecommerce_level','=','tiktok')]</field>
+            <field name="context">{'create': 0, 'edit': 0}</field>
+        </record>
+        <!-- Menu -->
+        <menuitem id="menu_tiktok_product" name="TikTok Products" web_icon="erp_tiktok,static/description/icon.png" sequence="100"/>
+        <menuitem id="menu_tiktok_product_list" name="TikTok Product List" parent="menu_tiktok_product" sequence="10"/>
+        <menuitem id="product_tiktok_view" name="Product Tiktok" parent="menu_tiktok_product_list" action="action_tiktok_product" sequence="5"/>
+        <menuitem id="product_tiktok_fetch" name="Fetch Product Tiktok" parent="menu_tiktok_product_list" action="action_fetch_data_product_tiktok" sequence="50"/>
+        <menuitem id="sale_order_tiktok" name="Sale-Order TikTok" parent="menu_tiktok_product" sequence="55"/>
+        <menuitem id="sale_order_tiktok_view" name="Sale-Order" parent="sale_order_tiktok" action="action_sale_order_tiktok_view" sequence="5"/>
+        <menuitem id="sale_order_tiktok_fetch" name="Fetch Sale-Order" parent="sale_order_tiktok" action="action_api_tiktok_saleorder" sequence="50"/>
+
+    </data>
+</odoo>

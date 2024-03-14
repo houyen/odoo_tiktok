@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+
+    <record id="view_sync_tiktok_product_tree" model="ir.ui.view">
+        <field name="name">sync.tiktok.product.tree</field>
+        <field name="model">sync.tiktok.product</field>
+        <field name="arch" type="xml">
+            <tree string="Sync Tiktok Product" create="0" delete="0">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="prices_list_id"/>
+                
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_sync_tiktok_product" model="ir.actions.act_window">
+        <field name="name">Sync Tiktok Product</field>
+        <field name="res_model">sync.tiktok.product</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <!-- <record id="action_sync_product_tiktok" model="ir.actions.server">
+        <field name="name">Sync Product</field>
+        <field name="model_id" ref="erp_tiktok.model_sync_tiktok_product"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = model.sync_product()
+        </field>
+    </record> -->
+
+    <menuitem id="menu_sync_tiktok_product" name="Sync Product Tiktok" parent="erp_tiktok.menu_tiktok_product" 
+        action="action_sync_tiktok_product" sequence="65" groups="base.group_no_one"/>
+
+</odoo>

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+product_mapping_tiktok,product_mapping_tiktok,model_product_mapping,base.group_erp_manager,1,1,1,1
+product_mapping_tiktok_line,product_mapping_tiktok_line,model_product_mapping_line,base.group_erp_manager,1,1,1,1
+tiktok_product,tiktok_product,model_tiktok_product,base.group_erp_manager,1,1,1,1
+sync_tiktok_product,sync_tiktok_product,model_sync_tiktok_product,base.group_erp_manager,1,1,1,1

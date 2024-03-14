@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_redis_view" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.reidis</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('settings')]" position="inside">
+                <div class="app_settings_block" data-string="Tiktok" string="TikTok" data-key="erp_tiktok">
+                    <h2>TikTok Config</h2>
+                    <div class="row mt16 o_settings_container" name="sendmail_setting_container">
+                        <div class="col-12 col-lg-12 o_setting_box" id="tiktok">
+                            <div class="o_setting_right_pane">
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <h5>URL</h5>
+                                        <field name="url_tiktok" class="o_light_label" readonly="1" />
+                                    </div>
+                                    <div class="mt16">
+                                        <h5>Access Token</h5>
+                                        <field name="token_tiktok" class="o_light_label" readonly="0" />
+                                    </div>
+                                    <div class="mt16" invisible="0">
+                                        <h5>Price List</h5>
+                                        <field name="pricelist_id" class="o_light_label" required="1" />
+                                    </div>
+                                    <div class="mt16" invisible="0">
+                                        <h5>Warehouse</h5>
+                                        <field name="warehouse_id" class="o_light_label" required="1" />
+                                    </div>
+                                    <div class="mt16">
+                                        <h5>Shop ID</h5>
+                                        <field name="shop_id" class="o_light_label" readonly="1" />
+                                    </div>
+                                    <div class="mt16" invisible="1">
+                                        <h5>Shipping Type</h5>
+                                        <field name="shipping_type" class="o_light_label" />
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
