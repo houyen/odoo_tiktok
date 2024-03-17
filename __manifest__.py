@@ -13,7 +13,6 @@
     ],
     "data": [
         "data/ir_cron.xml",
-        "data/data.xml",
         "security/ir.model.access.csv",
         "views/res_config_setting_views.xml",
         "views/tiktok_product_view.xml",

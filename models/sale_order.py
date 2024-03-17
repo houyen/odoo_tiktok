@@ -5,7 +5,6 @@ from odoo.exceptions import UserError
 import requests
 import urllib.request
 import urllib.parse
-from datetime import datetime
 from collections import Counter
 
 from .sign_api_request import cal_sign, get_timestamp, get_cipher_shop_key
@@ -25,8 +24,8 @@ class SaleOrder(models.Model):
     ], string='Ecommerce Level', default='other')
         
     def get_sale_order_list_data(self):
-        base_url = self.env['ir.config_parameter'].sudo().get_param('erp_tiktok.url_tiktok', '')
-        token = self.env['ir.config_parameter'].sudo().get_param('erp_tiktok.token_tiktok', '')
+        base_url = self.env['ir.config_parameter'].sudo().get_param('odoo_tiktok.url_tiktok', '')
+        token = self.env['ir.config_parameter'].sudo().get_param('odoo_tiktok.token_tiktok', '')
         app_key = config.get('app_key_tiktok', False)
         app_secret = config.get('app_secret_tiktok', False)
         
@@ -78,8 +77,6 @@ class SaleOrder(models.Model):
                 for order in datas:
                     order_id = self.env['sale.order'].sudo().search([
                         ('tictok_order_id', '=', order.get('id', ''))], limit=1)
-                    transporter_id = self.env['res.partner'].sudo().search([('transporter_code', '=', 'TIK')], limit=1)
-                    shipping_method_id = self.env['delivery.carrier'].sudo().search([('transporter_id', '=',transporter_id.id)], limit=1)
                     status = order.get('status', '')
                     if not order_id:
                         line_items = order.get("line_items", [])
@@ -127,53 +124,22 @@ class SaleOrder(models.Model):
                             'order_line': [(0, 0, line) for line in prepared_line_items],
                             'ecommerce_level': 'tiktok',
                             'tiktok_status': status,
-                            'transporter_id': transporter_id.id,
-                            'shipping_method_id': shipping_method_id.id if shipping_method_id else False,
-                            'transport_order_ids': [(0, 0, {
-                                'name': order.get('id', ''),
-                                'transporter_id': transporter_id.id,
-                                'cod': order.get('payment', {}).get('total_amount') if order.get('is_cod') != 'false' else 0,
-                                'shipping_method_id': shipping_method_id.id if shipping_method_id else False,
-                                'shipping_fee': order.get('payment', {}).get('shipping_fee'),
-                                'pay_fee_type': 'customer',
-                                'plan_picking_date': datetime.fromtimestamp(int(order.get('delivery_time'))) if order.get('delivery_time') else datetime.now(),
-                                'plan_shipping_date': datetime.fromtimestamp(int(order.get('delivery_time'))) if order.get('delivery_time') else datetime.now(),
-                            })],
-                            'account_payment_ids': [(0, 0, {
-                                'date': datetime.now(),
-                                'name': 'TikTok -%s' % order.get('id', ''),
-                                'amount_company_currency_signed': order.get('payment', {}).get('total_amount'),
-                                'currency_id': self.env['res.currency'].sudo().search([('name', '=', 'VND')], limit=1).id,
-                                'payment_method_line_id': self.env['account.payment.method.line'].sudo().search([('code', '=', 'manual')], limit=1).id,
-                                'journal_id': self.env['account.journal'].sudo().search([('type', '=', 'bank')], limit=1).id,
-                                'ref': order.get('id', ''),
-                                'state': 'draft',
-                            })],
                         }
                         if status == 'AWAITING_SHIPMENT':
                             order = self.env['sale.order'].sudo().create(data)
-                            for payment in order.account_payment_ids:
-                                payment.action_post()
  
                         elif status == 'CANCELLED':
                             data['state'] = 'cancel'
                             order = self.env['sale.order'].sudo().create(data)
-                            for payment in order.account_payment_ids:
-                                payment.action_post()
                         elif status not in ['AWAITING_SHIPMENT', 'CANCELLED']:
                             order = self.env['sale.order'].sudo().create(data)
                             order.action_confirm()
-                            order.action_confirm()
-                            for payment in order.account_payment_ids:
-                                payment.action_post()
                         
                     else:
                         order_id.write({
                             'tiktok_status': status,
-                            'shipping_method_id': shipping_method_id.id if shipping_method_id else False,
                         })
                         if status not in ['AWAITING_SHIPMENT', 'CANCELLED']:
-                            order_id.action_confirm()
                             order_id.action_confirm()
                         
                 # if sale_order_vals:

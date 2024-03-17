@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form" />
         <field name="arch" type="xml">
             <xpath expr="//div[hasclass('settings')]" position="inside">
-                <div class="app_settings_block" data-string="Tiktok" string="TikTok" data-key="erp_tiktok">
+                <div class="app_settings_block" data-string="Tiktok" string="TikTok" data-key="odoo_tiktok">
                     <h2>TikTok Config</h2>
                     <div class="row mt16 o_settings_container" name="sendmail_setting_container">
                         <div class="col-12 col-lg-12 o_setting_box" id="tiktok">
@@ -23,10 +23,6 @@
                                     <div class="mt16" invisible="0">
                                         <h5>Price List</h5>
                                         <field name="pricelist_id" class="o_light_label" required="1" />
-                                    </div>
-                                    <div class="mt16" invisible="0">
-                                        <h5>Warehouse</h5>
-                                        <field name="warehouse_id" class="o_light_label" required="1" />
                                     </div>
                                     <div class="mt16">
                                         <h5>Shop ID</h5>

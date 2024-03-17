@@ -24,14 +24,14 @@
 
     <!-- <record id="action_sync_product_tiktok" model="ir.actions.server">
         <field name="name">Sync Product</field>
-        <field name="model_id" ref="erp_tiktok.model_sync_tiktok_product"/>
+        <field name="model_id" ref="odoo_tiktok.model_sync_tiktok_product"/>
         <field name="state">code</field>
         <field name="code">
             action = model.sync_product()
         </field>
     </record> -->
 
-    <menuitem id="menu_sync_tiktok_product" name="Sync Product Tiktok" parent="erp_tiktok.menu_tiktok_product" 
+    <menuitem id="menu_sync_tiktok_product" name="Sync Product Tiktok" parent="odoo_tiktok.menu_tiktok_product" 
         action="action_sync_tiktok_product" sequence="65" groups="base.group_no_one"/>
 
 </odoo>

@@ -50,7 +50,7 @@
 
         <record id="action_fetch_data_product_tiktok" model="ir.actions.server">
             <field name="name">Create Product from API</field>
-            <field name="model_id" ref="erp_tiktok.model_tiktok_product"/>
+            <field name="model_id" ref="odoo_tiktok.model_tiktok_product"/>
             <field name="state">code</field>
             <field name="code">
                 action = model.save_product_list_data()
@@ -59,7 +59,7 @@
 
         <record id="action_api_tiktok_saleorder" model="ir.actions.server">
             <field name="name">Create SO from API</field>
-            <field name="model_id" ref="erp_tiktok.model_sale_order"/>
+            <field name="model_id" ref="odoo_tiktok.model_sale_order"/>
             <field name="state">code</field>
             <field name="code">
                 action = model.create_sale_order_from_api()
@@ -73,7 +73,7 @@
             <field name="context">{'create': 0, 'edit': 0}</field>
         </record>
         <!-- Menu -->
-        <menuitem id="menu_tiktok_product" name="TikTok Products" web_icon="erp_tiktok,static/description/icon.png" sequence="100"/>
+        <menuitem id="menu_tiktok_product" name="TikTok Products" web_icon="odoo_tiktok,static/description/icon.png" sequence="100"/>
         <menuitem id="menu_tiktok_product_list" name="TikTok Product List" parent="menu_tiktok_product" sequence="10"/>
         <menuitem id="product_tiktok_view" name="Product Tiktok" parent="menu_tiktok_product_list" action="action_tiktok_product" sequence="5"/>
         <menuitem id="product_tiktok_fetch" name="Fetch Product Tiktok" parent="menu_tiktok_product_list" action="action_fetch_data_product_tiktok" sequence="50"/>

@@ -4,7 +4,6 @@ from odoo.tools import config
 import logging
 
 import requests
-import json
 import urllib.request
 import urllib.parse
 from .sign_api_request import cal_sign, get_timestamp, get_cipher_shop_key
@@ -40,24 +39,19 @@ class TikTokProduct(models.Model):
     
     @api.depends('product_id', 'product_id.free_qty')
     def _compute_product_product_base(self):
-        price =  self.env['ir.config_parameter'].sudo().get_param('erp_tiktok.pricelist_id')
-        warehouse_id = self.env['ir.config_parameter'].sudo().get_param('erp_tiktok.warehouse_id')
+        price =  self.env['ir.config_parameter'].sudo().get_param('odoo_tiktok.pricelist_id')
         if price:
             price = self.env['product.pricelist'].browse(int(price))
             for record in self:
                 price_approved = self.env['product.pricelist.item'].search([
                             ('product_tmpl_id', '=', record.product_id.product_tmpl_id.id),
                             ('pricelist_id', '=', price.id),
-                            ('effect_type', '=', 'approve'),
-                            ('price_state', '=', 'in_use')
-                        ], limit=1).price_approved
-                record.product_quantity_tiktok = record.product_id.with_context(
-                warehouse=self.env['stock.warehouse'].browse(int(warehouse_id)).id).free_qty
+                        ], limit=1).price
+                record.product_quantity_tiktok = record.product_id.free_qty
                 record.product_price_tiktok = price_approved
         else:
             for record in self:
-                record.product_quantity_tiktok =  record.product_id.with_context(
-                warehouse=self.env['stock.warehouse'].browse(int(warehouse_id)).id).free_qty
+                record.product_quantity_tiktok =  record.product_id.free_qty
                 record.product_price_tiktok = record.product_id.list_price    
     
     def _check_status_mapping(self):
@@ -81,8 +75,8 @@ class TikTokProduct(models.Model):
         return super(TikTokProduct, self).unlink()
      
     def get_product_list_data(self):
-        base_url = self.env['ir.config_parameter'].sudo().get_param('erp_tiktok.url_tiktok', '')
-        token = self.env['ir.config_parameter'].sudo().get_param('erp_tiktok.token_tiktok', '')
+        base_url = self.env['ir.config_parameter'].sudo().get_param('odoo_tiktok.url_tiktok', '')
+        token = self.env['ir.config_parameter'].sudo().get_param('odoo_tiktok.token_tiktok', '')
         app_key = config.get('app_key_tiktok', False)
         app_secret = config.get('app_secret_tiktok', False)
         
@@ -182,13 +176,11 @@ class SyncTikTokProduct(models.Model):
         else:
             product_vals = []
             for product in products:
-                if product.product_id.product_tmpl_id.use_approved_prices:
+                if product.product_id.product_tmpl_id:
                     price_unit = self.env['product.pricelist.item'].search([
                         ('product_tmpl_id', '=', product.product_id.product_tmpl_id.id),
                         ('pricelist_id', '=', self.prices_list_id.id),
-                        ('effect_type', '=', 'approve'),
-                        ('price_state', '=', 'in_use')
-                    ], limit=1).price_approved
+                    ], limit=1).price
                 product_vals.append({
                     'tiktok_product_id': product.id,
                     'price_to_sync': price_unit,
@@ -204,8 +196,8 @@ class SyncTikTokProduct(models.Model):
 
     def sync_quantity(self):
     #Path: /product/202309/products/{product_id}/inventory/update Method: [POST]
-        base_url = self.env['ir.config_parameter'].sudo().get_param('erp_tiktok.url_tiktok', '')
-        token = self.env['ir.config_parameter'].sudo().get_param('erp_tiktok.token_tiktok', '')
+        base_url = self.env['ir.config_parameter'].sudo().get_param('odoo_tiktok.url_tiktok', '')
+        token = self.env['ir.config_parameter'].sudo().get_param('odoo_tiktok.token_tiktok', '')
         app_key = config.get('app_key_tiktok', False)
         app_secret = config.get('app_secret_tiktok', False)
         for data in self.get_tiktok_product_data():
@@ -246,8 +238,8 @@ class SyncTikTokProduct(models.Model):
     
     def sync_price(self):
         #Path: /product/202309/products/{product_id}/prices/update Method: [POST]
-        base_url = self.env['ir.config_parameter'].sudo().get_param('erp_tiktok.url_tiktok', '')
-        token = self.env['ir.config_parameter'].sudo().get_param('erp_tiktok.token_tiktok', '')
+        base_url = self.env['ir.config_parameter'].sudo().get_param('odoo_tiktok.url_tiktok', '')
+        token = self.env['ir.config_parameter'].sudo().get_param('odoo_tiktok.token_tiktok', '')
         app_key = config.get('app_key_tiktok', False)
         app_secret = config.get('app_secret_tiktok', False)
         for data in self.get_tiktok_product_data():
@@ -288,7 +280,7 @@ class SyncTikTokProduct(models.Model):
         try:
             if self.get_tiktok_product_data():
                 data = {
-                    'prices_list_id': self.env['ir.config_parameter'].sudo().get_param('erp_tiktok.pricelist_id'),
+                    'prices_list_id': self.env['ir.config_parameter'].sudo().get_param('odoo_tiktok.pricelist_id'),
                 }
                 rec = self.create(data)
                 rec.sync_price()
